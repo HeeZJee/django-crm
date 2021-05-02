@@ -6,10 +6,12 @@
     <title>Document</title>
   </head>
   <body>
-    <a href="/leads/"> Go back </a>
+    <a href="{% url 'leads:lead_list' %}" > Go back </a>
     <hr />
     <p>Name: {{lead.first_name}} {{lead.last_name}}</p>
     <p>Age: {{lead.age}}</p>
     <p>Agent: {{lead.agent}}</p>
+    <p><a href="{% url 'leads:lead_update' lead.id %}" >Update</a></p>
+    <p><a href="{% url 'leads:lead_delete' lead.id %}">Delete</a></p>
   </body>
 </html>
