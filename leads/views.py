@@ -4,7 +4,9 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from leads.models import Agent, Lead
 
-# Create your views here.
+def landing_page(request):
+    return render(request, "leads/landing.html")
+
 def lead_list(request):
     leads = Lead.objects.all()
     context = {
