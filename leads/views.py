@@ -1,5 +1,6 @@
 from django.views.generic.edit import DeleteView
 from leads.forms import  LeadModelForm
+from django.core.mail import send_mail
 from django.shortcuts import redirect, render, reverse
 from leads.models import  Lead
 from django.views import  generic
@@ -25,6 +26,15 @@ class LeadCreatePage(generic.CreateView):
 
     def get_success_url(self):
         return reverse('leads:lead_list')
+    
+    def form_valid(self, form):
+        send_mail(
+            subject="Lead Created",
+            message="The lead has been created on your CRM. Please! visit to check your lead.",
+            from_email="hafeezghanchi927@gmail.com",
+            recipient_list=['hafeezghanchi927@gmail.com']   
+            )
+        return super(LeadCreatePage,self).form_valid(form)
 
 class LeadUpdateView(generic.UpdateView):
     template_name = "leads/lead_update.html"            
