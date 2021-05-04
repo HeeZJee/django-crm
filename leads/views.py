@@ -1,11 +1,20 @@
 from django.views.generic.edit import DeleteView
-from leads.forms import  LeadModelForm
+from leads.forms import  LeadModelForm, CustomUserCreationForm
 from django.core.mail import send_mail
 from django.shortcuts import redirect, render, reverse
 from leads.models import  Lead
 from django.views import  generic
+
+
+class SignupView(generic.CreateView):
+    template_name = "registration/signup.html"            
+    form_class = CustomUserCreationForm
+
+    def get_success_url(self):
+        return reverse('login')
+
 class LandingPageView(generic.TemplateView):
-    template_name = "leads/landing.html"
+    template_name = "landing.html"
 
 class LeadListPage(generic.ListView):
     template_name = 'leads/lead_list.html'
@@ -42,7 +51,7 @@ class LeadUpdateView(generic.UpdateView):
     form_class = LeadModelForm
 
 
-    def get_success_url(self):
+    def get_success_url(self): 
         return reverse('leads:lead_list')
 
 class LeadDeletePage(generic.DeleteView):
