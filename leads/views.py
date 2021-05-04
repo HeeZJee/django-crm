@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import DeleteView
 from leads.forms import  LeadModelForm, CustomUserCreationForm
 from django.core.mail import send_mail
@@ -6,7 +7,7 @@ from leads.models import  Lead
 from django.views import  generic
 
 
-class SignupView(generic.CreateView):
+class SignupView(LoginRequiredMixin,generic.CreateView):
     template_name = "registration/signup.html"            
     form_class = CustomUserCreationForm
 
@@ -16,20 +17,20 @@ class SignupView(generic.CreateView):
 class LandingPageView(generic.TemplateView):
     template_name = "landing.html"
 
-class LeadListPage(generic.ListView):
+class LeadListPage(LoginRequiredMixin,generic.ListView):
     template_name = 'leads/lead_list.html'
     queryset = Lead.objects.all()
     context_object_name = "leads"
 
 
-class LeadDetailPage(generic.DetailView):
+class LeadDetailPage(LoginRequiredMixin,generic.DetailView):
     template_name = 'leads/lead_detail.html'
     queryset = Lead.objects.all()
     context_object_name = "lead"
 
 
 
-class LeadCreatePage(generic.CreateView):
+class LeadCreatePage(LoginRequiredMixin,generic.CreateView):
     template_name = "leads/lead_create.html"            
     form_class = LeadModelForm
 
@@ -45,7 +46,7 @@ class LeadCreatePage(generic.CreateView):
             )
         return super(LeadCreatePage,self).form_valid(form)
 
-class LeadUpdateView(generic.UpdateView):
+class LeadUpdateView(LoginRequiredMixin,generic.UpdateView):
     template_name = "leads/lead_update.html"            
     queryset = Lead.objects.all()
     form_class = LeadModelForm
@@ -54,7 +55,7 @@ class LeadUpdateView(generic.UpdateView):
     def get_success_url(self): 
         return reverse('leads:lead_list')
 
-class LeadDeletePage(generic.DeleteView):
+class LeadDeletePage(LoginRequiredMixin,generic.DeleteView):
     template_name = "leads/lead_delete.html"   
     queryset = Lead.objects.all()         
     form_class = LeadModelForm
