@@ -9,7 +9,8 @@ class AgentListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'agents'
     
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation = self.request.user.userprofile
+        return Agent.objects.filter(organisation=organisation)
     
 class AgentCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = "agents/agent_create.html"
@@ -21,7 +22,6 @@ class AgentCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self,form):
         agent = form.save(commit = False)
         agent.organisation = self.request.user.userprofile
-        print(agent.organisation)
         agent.save()
         return super(AgentCreateView,self).form_valid(form)
     
@@ -31,7 +31,8 @@ class AgentDetailView(LoginRequiredMixin,generic.DetailView):
     context_object_name = 'agent'
     
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation = self.request.user.userprofile
+        return Agent.objects.filter(organisation=organisation)
 
 class AgentUpdateView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'agents/agent_update.html'
@@ -39,25 +40,27 @@ class AgentUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = AgentModelForm
 
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation = self.request.user.userprofile
+        return Agent.objects.filter(organisation=organisation)
     
     def get_success_url(self):   
         return reverse("agents:agent_list")
-    
     
 class AgentDetailView(LoginRequiredMixin,generic.DetailView):
     template_name = 'agents/agent_detail.html'
     context_object_name = 'agent'
     
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation = self.request.user.userprofile
+        return Agent.objects.filter(organisation=organisation)
     
 class AgentDeleteView(LoginRequiredMixin,generic.DeleteView):
     template_name = "agents/agent_delete.html"   
     context_object_name = 'agent'
 
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation = self.request.user.userprofile
+        return Agent.objects.filter(organisation=organisation)
     
     def get_success_url(self):   
         return reverse("agents:agent_list")
