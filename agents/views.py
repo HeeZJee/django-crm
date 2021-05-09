@@ -4,6 +4,9 @@ from django.views import generic
 from .mixins import OraganisorLoginRequiredMixin
 from leads.models import Agent
 from django.urls import reverse
+from django.core.mail import send_mail
+import random, string
+
 # Create your views here.
 class AgentListView(OraganisorLoginRequiredMixin, generic.ListView):
     template_name = "agents/agent_list.html"
@@ -21,9 +24,24 @@ class AgentCreateView(OraganisorLoginRequiredMixin, generic.CreateView):
         return reverse("agents:agent_list")
     
     def form_valid(self,form):
-        agent = form.save(commit = False)
-        agent.organisation = self.request.user.userprofile
-        agent.save()
+        user = form.save(commit = False)
+        user.is_agent = True
+        user.is_organisor = False
+        password = ''.join(random.choices(string.hexdigits, k=12))
+        user.set_password(password)
+        user.save()
+        Agent.objects.create(
+            user=user,
+            organisation = self.request.user.userprofile 
+        )
+        
+        send_mail(
+            subject="You are invited to be an agent",
+            message=f"You were added to as an agent on HeeZJee CRM. You are requested to login to start working. \nUsername: {user.username} \nPassword: {password}",
+            from_email="admin@heezjee-crm.com",
+            recipient_list=[user.email]
+        )
+        
         return super(AgentCreateView,self).form_valid(form)
     
     
