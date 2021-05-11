@@ -37,7 +37,7 @@ class AgentCreateView(OraganisorLoginRequiredMixin, generic.CreateView):
         
         send_mail(
             subject="You are invited to be an agent",
-            message=f"You were added to as an agent on HeeZJee CRM. You are requested to login to start working. \nUsername: {user.username} \nPassword: {password}",
+            message=f"You were added to as an agent on HeeZJee CRM. You are requested to login to start working. \nUsername: {user.username} \nPassword: {user.password}",
             from_email="admin@heezjee-crm.com",
             recipient_list=[user.email]
         )
