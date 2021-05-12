@@ -1,6 +1,6 @@
 from agents.mixins import OraganisorLoginRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from leads.forms import  LeadModelForm, CustomUserCreationForm
+from leads.forms import  AssignAgentForm, LeadModelForm, CustomUserCreationForm
 from django.core.mail import send_mail
 from django.shortcuts import  reverse
 from leads.models import  Agent, Lead
@@ -115,3 +115,25 @@ class LeadDeletePage(OraganisorLoginRequiredMixin,generic.DeleteView):
         user = self.request.user    
         queryset = Lead.objects.filter(organisation= user.userprofile )        
         return queryset
+    
+class AssignAgentPage(OraganisorLoginRequiredMixin, generic.FormView):
+    template_name = 'leads/assign_agent.html'
+    form_class = AssignAgentForm
+    
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AssignAgentPage, self).get_form_kwargs(**kwargs)
+        kwargs.update({ "request": self.request })
+        return kwargs
+    
+    def get_success_url(self):
+        return reverse('leads:lead_list')
+
+    def form_valid(self, form):
+        ## grap the agent from form
+        ## grap the lead by "id from self kwargs" from model
+        ## assign agent to lead
+        agent = form.cleaned_data["agent"]
+        lead = Lead.objects.get(id=self.kwargs['pk'])
+        lead.agent = agent
+        lead.save()
+        return super(AssignAgentPage, self).form_valid(form)
