@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from leads.forms import  AssignAgentForm, LeadModelForm, CustomUserCreationForm
 from django.core.mail import send_mail
 from django.shortcuts import  reverse
-from leads.models import  Agent, Lead
+from leads.models import  Agent, Category, Lead
 from django.views import  generic
 
 
@@ -130,7 +130,6 @@ class AssignAgentPage(OraganisorLoginRequiredMixin, generic.FormView):
 
     def form_valid(self, form):
         ## grap the agent from form
-        
         ## grap the lead by "id from self kwargs" from model
         ## assign agent to lead
         agent = form.cleaned_data["agent"]
@@ -138,3 +137,41 @@ class AssignAgentPage(OraganisorLoginRequiredMixin, generic.FormView):
         lead.agent = agent
         lead.save()
         return super(AssignAgentPage, self).form_valid(form)
+    
+class CategoryListPage(LoginRequiredMixin, generic.ListView):
+    template_name = "leads/category_list.html"
+    context_object_name = "category_list"
+
+    def get_context_data(self,**kwargs):
+        context = super(CategoryListPage, self).get_context_data(**kwargs)
+        user = self.request.user
+
+        if user.is_organisor:
+            queryset = Lead.objects.filter(
+                organisation=user.userprofile,
+            )
+        else:
+            queryset = Lead.objects.filter(
+                organisation=user.agent.organisation,
+            )
+        
+        unassigned_lead_count = queryset.filter(category__isnull=True).count()
+        context.update({
+            "unassigned_lead_count": unassigned_lead_count
+        })
+        
+        return context
+    
+    
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_organisor:
+            queryset = Category.objects.filter(
+                organisation= user.userprofile,
+                )
+        else:
+            queryset = Category.objects.filter(
+                organisation= user.agent.organisation,
+                )        
+        return queryset
