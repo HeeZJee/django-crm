@@ -7,7 +7,6 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                sh 'apt get install python'
                 sh 'python -m pip install Django'
                 sh 'python -m venv virtualenv' 
                 sh 'source ./virtualenv/bin/activate' 
