@@ -9,7 +9,7 @@ pipeline {
             steps {
                 sh 'python3 -m venv env'
                 sh 'source ./env/bin/activate' 
-                sh 'pip install -r requirements.txt'
+                sh 'pip install -r Requirement.txt'
                 sh 'python manage.py makemigrations'
                 sh 'python manage.py migrate'
             }
