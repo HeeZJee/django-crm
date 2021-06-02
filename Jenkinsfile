@@ -7,10 +7,10 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
-                sh 'python -m venv env'
-                sh 'source ./env/bin/activate' 
-                sh './env/bin/pip install -r Requirement.txt'
-                sh './env/bin/pip install django'
+                sh 'pip install virtualenv'
+                sh 'virtualenv venv' 
+                sh 'pip install -r Requirement.txt'
+                sh 'pip install django'
                 sh 'python manage.py makemigrations'
                 sh 'python manage.py migrate'
             }
