@@ -8,7 +8,7 @@ pipeline {
         stage('Build') { 
             steps {
                 sh 'python -m venv venv'
-                sh 'ls -laoh'
+                sh 'ls -lah'
                 sh 'cmown -R jenkins:jenkins .' 
                 sh 'pip install -r Requirement.txt'
                 sh 'pip install  django'
