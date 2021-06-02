@@ -7,6 +7,7 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
+                sh 'whoami'
                 sh 'chown -R ${whoami}:${whoami} .' 
                 sh 'python -m venv venv'
                 sh 'ls -lah'
