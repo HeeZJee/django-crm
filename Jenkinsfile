@@ -7,9 +7,9 @@ pipeline {
     stages {
         stage('Build') { 
             steps {
+                sh 'chown -R root:root .' 
                 sh 'python -m venv venv'
                 sh 'ls -lah'
-                sh 'chown -R jenkins:jenkins .' 
                 sh 'pip install -r Requirement.txt'
                 sh 'pip install  django'
                 sh 'django-admin --version'
